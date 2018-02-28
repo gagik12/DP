@@ -23,7 +23,7 @@ namespace Backend.Controllers
 
         // POST api/values
         [HttpPost]
-        public string Post([FromForm]string value)
+        public string Post(string value)
         {
             var id = Guid.NewGuid().ToString();
             _data[id] = value;

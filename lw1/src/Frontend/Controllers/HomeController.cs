@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Frontend.Models;
 using System.Net.Http;
+using System.Net;
 
 namespace Frontend.Controllers
 {
     public class HomeController : Controller
     {
+        private static string API_URL = "http://127.0.0.1:5000/api/values";
+        private HttpClient httpClient = new HttpClient();
         public IActionResult Index()
         {
             return View();
@@ -25,9 +28,17 @@ namespace Frontend.Controllers
         [HttpPost]
         public IActionResult Upload(string data)
         {
-            string id = null; 
-            //TODO: send data in POST request to backend and read returned id value from response
-            return Ok(id);
+            if (data == null)
+            {
+                return Ok("");
+            }
+            List<KeyValuePair<string, string>> values = new List<KeyValuePair<string, string>>(){
+                new KeyValuePair<string, string>("value", data),
+            };
+            var content = new FormUrlEncodedContent(values);
+            var request = httpClient.PostAsync(API_URL, content);
+            var requestContent = request.Result.Content.ReadAsStringAsync();
+            return Ok(requestContent.Result);
         }
 
         public IActionResult Error()
